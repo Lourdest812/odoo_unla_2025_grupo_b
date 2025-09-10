@@ -1,68 +1,183 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- ===============================
-         VISTAS DEL MODELO estate.property
-    ================================ -->
-
-    <!-- Vista lista -->
-    <record id="view_estate_property_list" model="ir.ui.view">
-        <field name="name">estate.property.list</field>
+    <!-- LISTA CUSTOM (principal) -->
+    <record id="view_estate_property_list_custom" model="ir.ui.view">
+        <field name="name">estate.property.list.custom</field>
         <field name="model">estate.property</field>
-        <field name="type">list</field>
+        <field name="priority">10</field>
         <field name="arch" type="xml">
             <list string="Propiedades">
-                <field name="name" />
-                <field name="postcode" />
-                <field name="date_availability" />
-                <field name="garden_orientation" />
+                <field name="name" string="Título"/>
+                <field name="tag_ids" string="Etiquetas" widget="many2many_tags"/>
+                <field name="postcode" string="Código Postal"/>
+                <field name="bedrooms" string="Habitaciones"/>
+                <field name="living_area" string="Superficie Cubierta"/>
+                <field name="expected_price" string="Precio esperado"/>
+                <field name="sellind_price" string="Precio de venta"/>
+                <field name="date_availability" string="Fecha de disponibilidad"/>
+                <field name="property_type_id" string="Tipo"/>
+                <field name="state" string="Estado"/>
             </list>
         </field>
     </record>
 
-    <!-- Vista formulario (form) -->
+    <!-- FORM CLÁSICO (secundario) -->
     <record id="view_estate_property_form" model="ir.ui.view">
         <field name="name">estate.property.form</field>
         <field name="model">estate.property</field>
-        <field name="type">form</field>
+        <field name="priority">20</field>
         <field name="arch" type="xml">
             <form string="Propiedad">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="new,offer_received,offer_accepted,sold,canceled"/>
+                </header>
                 <sheet>
                     <group>
-                        <field name="name" />
-                        <field name="postcode" />
-                        <field name="date_availability" />
-                        <field name="garden_orientation" />
+                        <field name="name"/>
+                        <field name="tag_ids" string="Etiquetas" widget="many2many_tags"/>
+                        <field name="description"/>
+                    </group>
+                    <group>
+                        <field name="property_type_id" string="Tipo Propiedad"/>
+                        <field name="postcode"/>
+                        <field name="date_availability"/>
+                    </group>
+                    <group>
+                        <field name="expected_price"/>
+                        <field name="sellind_price"/>
+                    </group>
+                    <group>
+                        <field name="bedrooms"/>
+                        <field name="living_area"/>
+                        <field name="Facade"/>
+                    </group>
+                    <group>
+                        <field name="garage"/>
+                        <field name="garden"/>
+                        <field name="garden_orientation"/>
+                        <field name="garden_area"/>
+                        <field name="state"/>
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- ===============================
-         ACCIÓN PARA ABRIR EL MODELO
-    ================================ -->
+    <!-- FORM CUSTOM (principal) -->
+    <record id="view_estate_property_form_custom" model="ir.ui.view">
+        <field name="name">estate.property.form.custom</field>
+        <field name="model">estate.property</field>
+        <field name="priority">10</field>
+        <field name="arch" type="xml">
+            <form string="Propiedad">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="new,offer_received,offer_accepted,sold,canceled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" class="oe_inline" placeholder="Nombre propiedad"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <field name="tag_ids" string="Etiquetas" widget="many2many_tags"/>
+                    </group>
+
+                    <group>
+                        <group>
+                            <field name="property_type_id" string="Tipo Propiedad"/>
+                            <field name="postcode" string="Código Postal"/>
+                            <field name="date_availability" string="Fecha de disponibilidad"/>
+                        </group>
+                        <group>
+                            <field name="expected_price" string="Precio esperado"/>
+                            <field name="sellind_price" string="Precio de venta"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Descripción">
+                            <group>
+                                <group>
+                                    <field name="description" string="Descripción"/>
+                                    <field name="bedrooms" string="Habitaciones"/>
+                                    <field name="living_area" string="Superficie Cubierta"/>
+                                    <field name="Facade" string="Fachadas"/>
+                                    <field name="garage" string="Garage"/>
+                                </group>
+                                <group>
+                                    <field name="garden" string="Jardín"/>
+                                    <field name="garden_area" string="Superficie del jardín"/>
+                                    <field name="garden_orientation" string="Orientación del jardín"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Más info.">
+                            <group>
+                                <group>
+                                    <field name="buyer_id" string="Comprador"/>
+                                    <field name="salesman_id" string="Vendedor"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- NUEVA página: Ofertas -->
+                        <page string="Ofertas">
+                            <field name="offer_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACCIÓN (usa lista y form CUSTOM) -->
     <record id="estate_property_action" model="ir.actions.act_window">
         <field name="name">Propiedades</field>
         <field name="res_model">estate.property</field>
         <field name="view_mode">list,form</field>
-        <field name="view_id" ref="view_estate_property_list" />
+        <field name="views" eval="[
+            (ref('view_estate_property_list_custom'), 'list'),
+            (ref('view_estate_property_form_custom'), 'form')
+        ]"/>
     </record>
 
-    <!-- ===============================
-         MENÚS
-    ================================ -->
-    <menuitem id="menu_estate_root" name="Inmobiliaria" />
-    <menuitem
-        id="menu_estate_advertisements"
-        name="Anuncios"
-        parent="menu_estate_root"
-    />
-    <menuitem
-        id="menu_estate_property"
-        name="Propiedades"
-        parent="menu_estate_advertisements"
-        action="estate_property_action"
-    />
+    <!-- BÚSQUEDA -->
+    <record id="view_estate_property_search" model="ir.ui.view">
+        <field name="name">estate.property.search</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Propiedades">
+                <field name="name" string="Título"/>
+                <field name="postcode" string="Código Postal"/>
+                <field name="expected_price" string="Precio esperado"/>
+                <field name="bedrooms" string="Habitaciones"/>
+                <field name="living_area" string="Superficie cubierta"/>
+                <field name="Facade" string="Fachadas"/>
+                <field name="property_type_id" string="Tipo"/>
+
+                <filter name="available_props"
+                        string="Disponibles"
+                        domain="[('state','in',('new','offer_received'))]"/>
+
+                <filter name="my_records"
+                        string="Mis registros"
+                        domain="[('create_uid', '=', uid)]"/>
+
+                <group expand="0" string="Agrupar por">
+                    <filter name="grp_state"    string="Estado"        context="{'group_by': 'state'}"/>
+                    <filter name="grp_creator"  string="Creador"       context="{'group_by': 'create_uid'}"/>
+                    <filter name="grp_month"    string="Mes de creación" context="{'group_by': 'create_date:month'}"/>
+                    <filter name="grp_postcode" string="Código Postal" context="{'group_by': 'postcode'}"/>
+                    <filter name="grp_type"     string="Tipo"          context="{'group_by': 'property_type_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 
 </odoo>
