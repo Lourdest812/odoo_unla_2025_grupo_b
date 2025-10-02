@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Raíz y existentes (asumidos) -->
+    <menuitem id="menu_estate_root" name="Inmobiliaria"/>
+    <menuitem id="menu_estate_advertisements" name="Anuncios" parent="menu_estate_root"/>
+    <menuitem id="menu_estate_property" name="Propiedades"
+              parent="menu_estate_advertisements" action="estate_property_action"/>
+
+    <!-- Ajustes (sólo managers) -->
+    <menuitem id="menu_estate_settings" name="Ajustes"
+              parent="menu_estate_root"
+              groups="real_estate.group_real_estate_manager"/>
+
+    <!-- Tipos de propiedad (apunta a la acción list-only) -->
+    <menuitem id="menu_estate_property_types" name="Tipos de propiedad"
+              parent="menu_estate_settings"
+              action="estate_property_type_action"
+              groups="real_estate.group_real_estate_manager"/>
+
+    <!-- Etiquetas de propiedad (nuevo) -->
+    <menuitem id="menu_estate_property_tags" name="Etiquetas de propiedad"
+              parent="menu_estate_settings"
+              action="estate_property_tag_action"
+              groups="real_estate.group_real_estate_manager"/>
+</odoo>
