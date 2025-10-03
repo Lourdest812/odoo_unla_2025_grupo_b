@@ -177,11 +177,12 @@
                 <filter name="my_records"
                     string="Mis registros"
                     domain="[('create_uid','=',uid)]"/>
-
-                <filter name="grp_state" string="Estado" context="{'group_by':'state'}"/>
-                <filter name="grp_creator" string="Creador" context="{'group_by':'create_uid'}"/>
-                <filter name="grp_postcode" string="Código Postal" context="{'group_by':'postcode'}"/>
-                <filter name="grp_type" string="Tipo" context="{'group_by':'property_type_id'}"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="grp_state" string="Estado" context="{'group_by':'state'}"/>
+                    <filter name="grp_creator" string="Creador" context="{'group_by':'create_uid'}"/>
+                    <filter name="grp_postcode" string="Código Postal" context="{'group_by':'postcode'}"/>
+                    <filter name="grp_type" string="Tipo" context="{'group_by':'property_type_id'}"/>
+                <group/>
             </search>
             </field>
     </record>
